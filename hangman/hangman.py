@@ -13,13 +13,23 @@
 # Use a while loop to let the user guess again. 
 # The loop should only stop once the user has guessed all the letters in the chosen_word.
 # At that point `display` has no more blanks ("_"). Then you can tell the user they've won.
+
+# Create a variable called `lives` to keep track of the number of lives left.
+# Set `lives` to equal `6`.
+
+# If `guess` is not a letter in the `chosen_word`, Then reduce `lives` by `1`. 
+# If `lives` goes down to `0` then the game should end, and it should print "You lose."
+
+# print the ASCII art from the list `stages` that corresponds to the current number of `lives` the user has remaining.
 import random
+import hangman_words
 
 placeholder = ''
 game_over = False
+lives = 6
 
-word_list = ["aardvark", "baboon", "camel"]
-chosen_word = random.choice(word_list).lower()
+
+chosen_word = random.choice(hangman_words.word_list).lower()
 
 numChars = len(chosen_word)
 for i in range(0, numChars):
@@ -28,11 +38,18 @@ for i in range(0, numChars):
 print(placeholder)
 
 correctLetters = []
+guessedLetters = []
 
 while not game_over:
-    guess = input(f"Please guess a letter.\n").lower()
 
+    print(f"************************ {lives} Remaining ************************")
+
+    guess = input(f"Please guess a letter.\n").lower()
     display = ''
+
+    if guess in guessedLetters:
+        print(f"{guess} is already one of the letters you had guessed previously.")
+        continue
 
     for char in chosen_word:
         if(char == guess):
@@ -45,6 +62,15 @@ while not game_over:
 
     print(display)
 
+    if(guess not in chosen_word):
+        print(f"'{guess}' is not in the chosen word.")
+        lives -= 1
+        if lives == 0:
+            game_over = True
+            print("You lose.")
+
     if( '_' not in display):
         game_over = True
         print("You win.")
+        
+    guessedLetters.append(guess)
