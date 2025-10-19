@@ -3,6 +3,13 @@ def deal_card():
     cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
     return random.choice(cards)
 
+def calculateSum(cards):
+    total = sum(cards)
+    if 11 in cards and total > 21:
+        cards.remove(11)
+        cards.append(1)
+    return sum(cards)
+
 playerDealtCards = []
 computerDealt = []
 computerTotal = 0
@@ -26,16 +33,14 @@ while activeHits:
         for num in playerDealtCards:
             cards +=  f"{num}, "
 
-    for num in playerDealtCards:
-        playerTotal += num  
+    playerTotal = calculateSum(playerDealtCards)  
 
     print(f"Player cards: {cards} - Total: {playerTotal}")
 
     if playerTotal > 21 or newCard == 'n':
         activeHits = False
     
-for num in computerDealt:
-    computerTotal += num
+    computerTotal = calculateSum(computerDealt)  
 
 if playerTotal > 21 or computerTotal <= 21 and playerTotal < computerTotal:
     print(f"Player {playerTotal} : Computer {computerTotal} - You Lose!")
