@@ -38,10 +38,8 @@ while game_active:
         game_active = False
         print("Snake hit the wall! Game over.")
 
-    for turtleSegment in snake.turtleSegments:
-        if turtleSegment == snake.head():
-            pass
-        elif snake.head().distance(turtleSegment) < 10:
+    for turtleSegment in snake.turtleSegments[1:]:
+        if snake.head().distance(turtleSegment) < 10:
             game_active = False
             print("Snake hit it's own tail! Game over.")
             
