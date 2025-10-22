@@ -9,11 +9,18 @@ class Snake:
     def __init__(self, startingLocations):
         self.turtleSegments = []
         for pos in startingLocations:
-            t = Turtle('square')
-            t.color('white')
-            t.penup()
-            t.goto(pos)
-            self.turtleSegments.append(t)
+            self.add_segment(pos)
+    
+    def add_segment(self, pos):
+        t = Turtle('square')
+        t.color('white')
+        t.penup()
+        t.goto(pos)
+        self.turtleSegments.append(t)
+        return t
+    
+    def extend(self):
+        self.add_segment(self.turtleSegments[-1].position())
 
     def move(self):
         for tSegNum in range(len(self.turtleSegments)-1, 0, -1): 
