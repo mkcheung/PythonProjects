@@ -12,8 +12,6 @@ startingLocations = [(0,0), (-20,0), (-40,0), (-60,0)]
 snake = Snake(startingLocations)
 food = Food()
 theScoreBoard = Scoreboard();
-theScoreBoard.goto(0,260)
-theScoreBoard.write(f"Score:{theScoreBoard.score}", align="center", font=("Arial", 24, "bold"))
 
 screen = Screen()
 screen.setup(width=600, height=600)
@@ -34,5 +32,9 @@ while game_active:
     if snake.head().distance(food) < 15:
         food.refresh()
         theScoreBoard.increment()
+    
+    if snake.head().xcor() > 280 or snake.head().xcor() < -280 or snake.head().ycor() > 280 or snake.head().ycor() < -280:
+        game_active = False
+        print("Snake hit the wall! Game over.")
 
 screen.exitonclick()
