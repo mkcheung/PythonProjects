@@ -39,3 +39,6 @@ class Snake:
     def down(self):
         if self.turtleSegments[0].heading() != UP and self.turtleSegments[0].heading() != DOWN:
             self.turtleSegments[0].setheading(UP)
+
+    def head(self):
+        return self.turtleSegments[0]
