@@ -29,18 +29,22 @@ while game_active:
     screen.update() 
     time.sleep(0.1)
     snake.move()
-    if snake.head().distance(food) < 15:
+    if snake.head.distance(food) < 15:
         food.refresh()
         snake.extend()
         theScoreBoard.increment()
     
-    if snake.head().xcor() > 280 or snake.head().xcor() < -280 or snake.head().ycor() > 280 or snake.head().ycor() < -280:
-        game_active = False
-        print("Snake hit the wall! Game over.")
+    if snake.head.xcor() > 280 or snake.head.xcor() < -280 or snake.head.ycor() > 280 or snake.head.ycor() < -280:
+        theScoreBoard.reset()
+        snake.reset()
+        # game_active = False
+        # print("Snake hit the wall! Game over.")
 
     for turtleSegment in snake.turtleSegments[1:]:
-        if snake.head().distance(turtleSegment) < 10:
-            game_active = False
+        if snake.head.distance(turtleSegment) < 10:
+            # game_active = False
+            theScoreBoard.reset()
+            snake.reset()
             print("Snake hit it's own tail! Game over.")
             
 screen.exitonclick()
