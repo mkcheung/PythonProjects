@@ -45,7 +45,8 @@ def writeToFile():
     line = " | ".join([website.strip(), emailUserName.strip(), password.strip()]) + "\n"
     with open(fileAndDirectory, mode) as dataFile:
         dataFile.write(line)
-
+    EmailUsernameInput.delete(0, END)
+    websiteInput.delete(0, END)
 
 addButton = Button(text="Add",width=36, command=writeToFile)
 addButton.grid(row=4, column=1, columnspan=2)
