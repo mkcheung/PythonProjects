@@ -1,5 +1,6 @@
-from tkinter import *
+import os
 from pathlib import Path
+from tkinter import *
 
 FONT_NAME = "Courier"
 
@@ -19,11 +20,13 @@ websiteLabel = Label(text="Website:", bg=WHITE)
 websiteLabel.grid(row=1, column=0)
 websiteInput = Entry(width=35)
 websiteInput.grid(row=1, column=1, columnspan=2)
+websiteInput.focus()
 
 EmailUsernameLabel = Label(text="Email/Username:", bg=WHITE)
 EmailUsernameLabel.grid(row=2, column=0)
 EmailUsernameInput = Entry(width=35, bg=WHITE)
 EmailUsernameInput.grid(row=2, column=1, columnspan=2)
+EmailUsernameInput.insert(0, 'mars.kwong.cheung@gmail.com')
 
 Password = Label(text="Password:", bg=WHITE)
 Password.grid(row=3, column=0)
@@ -32,7 +35,19 @@ PasswordInput.grid(row=3,column=1)
 
 generatePasswordButton = Button(text="Generate Password", bg=WHITE);
 generatePasswordButton.grid(row=3,column=2)
-addButton = Button(text="Add",width=36)
+
+def writeToFile():
+    fileAndDirectory = f"{workingDirectory}/data.txt"
+    mode = "a" if os.path.exists(fileAndDirectory) else "w"
+    emailUserName = EmailUsernameInput.get()
+    password = PasswordInput.get()
+    website = websiteInput.get()
+    line = " | ".join([website.strip(), emailUserName.strip(), password.strip()]) + "\n"
+    with open(fileAndDirectory, mode) as dataFile:
+        dataFile.write(line)
+
+
+addButton = Button(text="Add",width=36, command=writeToFile)
 addButton.grid(row=4, column=1, columnspan=2)
 
 window.mainloop()
