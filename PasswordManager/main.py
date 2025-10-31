@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from tkinter import *
+from tkinter import messagebox
 
 FONT_NAME = "Courier"
 
@@ -42,11 +43,16 @@ def writeToFile():
     emailUserName = EmailUsernameInput.get()
     password = PasswordInput.get()
     website = websiteInput.get()
-    line = " | ".join([website.strip(), emailUserName.strip(), password.strip()]) + "\n"
-    with open(fileAndDirectory, mode) as dataFile:
-        dataFile.write(line)
-    EmailUsernameInput.delete(0, END)
-    websiteInput.delete(0, END)
+
+    if not emailUserName or not password or not website:
+        messagebox.showinfo(title="WARNING", message="Please don't leave any fields empty!")
+    else:
+        messagebox.askokcancel(title=website, message=f"These are the details entered: \n Email: {emailUserName}" f"\nPassword: {password} \n Are you sure you want to save?")
+        line = " | ".join([website.strip(), emailUserName.strip(), password.strip()]) + "\n"
+        with open(fileAndDirectory, mode) as dataFile:
+            dataFile.write(line)
+        EmailUsernameInput.delete(0, END)
+        websiteInput.delete(0, END)
 
 addButton = Button(text="Add",width=36, command=writeToFile)
 addButton.grid(row=4, column=1, columnspan=2)
