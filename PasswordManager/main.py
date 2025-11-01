@@ -38,8 +38,8 @@ canvas.grid(row=0, column=1)
 
 websiteLabel = Label(text="Website:", bg=WHITE)
 websiteLabel.grid(row=1, column=0)
-websiteInput = Entry(width=35)
-websiteInput.grid(row=1, column=1, columnspan=2)
+websiteInput = Entry(width=21)
+websiteInput.grid(row=1, column=1)
 websiteInput.focus()
 
 EmailUsernameLabel = Label(text="Email/Username:", bg=WHITE)
@@ -55,6 +55,22 @@ PasswordInput.grid(row=3,column=1)
 
 generatePasswordButton = Button(text="Generate Password", bg=WHITE, command=generatePassword);
 generatePasswordButton.grid(row=3,column=2)
+
+def find_password():
+    fileAndDirectory = f"{workingDirectory}/data.json"
+    website = websiteInput.get()
+    try:
+        with open(fileAndDirectory, "r") as dataFile:
+            data = json.load(dataFile)
+        if data[website]:
+            messagebox.showinfo(title="Found!", message=f"Name:{website}\nPassword:{data[website]['password']}")
+    except FileNotFoundError:
+        messagebox.showinfo(title="WARNING", message="No Data File Found.")
+    except KeyError:
+        messagebox.showinfo(title="WARNING", message="No details for the website exists.")
+
+searchWebsiteButton = Button(text="Search", width=13, command=find_password)
+searchWebsiteButton.grid(row=1, column=2, columnspan=1)
 
 def writeToFile():
     fileAndDirectory = f"{workingDirectory}/data.json"
