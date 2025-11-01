@@ -4,6 +4,7 @@ import pyperclip
 from random import choice, randint, shuffle
 from tkinter import *
 from tkinter import messagebox
+import json
 def generatePassword():
     global PasswordInput
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -56,21 +57,34 @@ generatePasswordButton = Button(text="Generate Password", bg=WHITE, command=gene
 generatePasswordButton.grid(row=3,column=2)
 
 def writeToFile():
-    fileAndDirectory = f"{workingDirectory}/data.txt"
-    mode = "a" if os.path.exists(fileAndDirectory) else "w"
+    fileAndDirectory = f"{workingDirectory}/data.json"
     emailUserName = EmailUsernameInput.get()
     password = PasswordInput.get()
     website = websiteInput.get()
+    newData = {
+        website: {
+            "email": emailUserName,
+            "password": password
+        }
+    }
 
     if not emailUserName or not password or not website:
         messagebox.showinfo(title="WARNING", message="Please don't leave any fields empty!")
     else:
-        messagebox.askokcancel(title=website, message=f"These are the details entered: \n Email: {emailUserName}" f"\nPassword: {password} \n Are you sure you want to save?")
-        line = " | ".join([website.strip(), emailUserName.strip(), password.strip()]) + "\n"
-        with open(fileAndDirectory, mode) as dataFile:
-            dataFile.write(line)
-        EmailUsernameInput.delete(0, END)
-        websiteInput.delete(0, END)
+        try:
+            with open(fileAndDirectory, "r") as dataFile:
+                data = json.load(dataFile)
+        except FileNotFoundError:
+            with open(fileAndDirectory, "w") as dataFile:
+                json.dump(newData, dataFile, indent=4)
+        else:
+            data.update(newData)
+            with open(fileAndDirectory, "w") as dataFile:
+                json.dump(newData, dataFile, indent=4)
+        finally:
+            EmailUsernameInput.delete(0, END)
+            websiteInput.delete(0, END)
+
 
 addButton = Button(text="Add",width=36, command=writeToFile)
 addButton.grid(row=4, column=1, columnspan=2)
