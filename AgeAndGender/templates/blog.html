@@ -1,0 +1,12 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Blog</title>
+	</head>
+	<body>
+        {% for blogData in posts: %}
+            <h1>{{ blogData['title'] }}</h1>
+            <h2>{{ blogData['subtitle'] }}</h2>
+        {% endfor %}
+	</body>
+</html>

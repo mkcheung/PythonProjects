@@ -5,10 +5,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return '<h1 style="text-align: center;">Enter a /name in the URL to get a gender and age guess.</h1>'
+    return (
+       render_template('index.html')
+    )
 
 @app.route("/<nameInput>")
-def guess(nameInput):
+def guess_name(nameInput):
     parameters = {
         "name": nameInput
     }
@@ -23,7 +25,17 @@ def guess(nameInput):
     presumedGender = fromGenderize['gender']
 
     return (
-       render_template('index.html', name=nameInput, age=presumedAge, gender=presumedGender)
+       render_template('ageAndGender.html', name=nameInput, age=presumedAge, gender=presumedGender)
+    )
+
+@app.route("/blog")
+def get_blog():
+    responseFromNpoint = requests.get('https://api.npoint.io/81f40b5d0091e9b4cb74')
+    responseFromNpoint.raise_for_status();
+    blogInfo = responseFromNpoint.json();
+
+    return (
+       render_template('blog.html', posts=blogInfo)
     )
 
 if __name__ == "__main__":
