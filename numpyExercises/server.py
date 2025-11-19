@@ -67,7 +67,24 @@ print(neg3and3)
 # plt.title("-3 to 3 spaced values")
 # plt.show()
 
-noise = np.random.rand(128, 128, 3)
-plt.imshow(noise)
-plt.show()
+# noise = np.random.rand(128, 128, 3)
+# plt.imshow(noise)
+# plt.show()
 
+# linear algebra
+
+a1 = np.array([
+    [1,3],
+    [0,1],
+    [6,2],
+    [9,7],
+]);
+
+a2 = np.array([
+    [4,1,3],
+    [5,8,5]
+]);
+
+result = np.matmul(a1, a2)
+
+print(result)
