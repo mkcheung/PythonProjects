@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 workingDirectory = Path(__name__).resolve().parent;
 costRevenueDf = pd.read_csv(f"{workingDirectory}/cost_revenue_dirty.csv");
@@ -86,3 +87,18 @@ notBreakEvenFilmsDf = filmsToMay1st2018Df.query("USD_Production_Budget > (USD_Wo
 print(f"Number of Films that didn't break even: {len(notBreakEvenFilmsDf)}")
 percentDidNotBreakEven = (len(notBreakEvenFilmsDf) / len(filmsToMay1st2018Df)) * 100.0
 print(f"Percent of films that didn't break even: {round(percentDidNotBreakEven,2)}%")
+
+plt.figure(figsize=(8,4), dpi=200)
+ 
+ax = sns.scatterplot(data=filmsToMay1st2018Df,
+    y='USD_Production_Budget', 
+    x='Release_Date',
+    hue='USD_Worldwide_Gross',
+    size='USD_Worldwide_Gross'
+)
+ax.set(ylim=(0, 450000000),
+    xlim=(filmsToMay1st2018Df.Release_Date.min(), filmsToMay1st2018Df.Release_Date.max()),
+    xlabel='Year',
+    ylabel='Budget in $100 millions'
+)
+plt.show()
