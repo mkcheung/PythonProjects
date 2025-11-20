@@ -18,8 +18,6 @@ print(containsDuplicates) # df has no duplicate rows
 # print(costRevenueDf.info())
 
 #Challenge 2: Convert the USD_Production_Budget, USD_Worldwide_Gross, and USD_Domestic_Gross columns to a numeric format by removing $ signs and ,.
-# print(costRevenueDf.columns)
-# print(costRevenueDf) 
 costRevenueDf['USD_Production_Budget'] = costRevenueDf['USD_Production_Budget'].astype(str).str.replace("$","")
 costRevenueDf['USD_Production_Budget'] = costRevenueDf['USD_Production_Budget'].astype(str).str.replace(",","")
 costRevenueDf['USD_Production_Budget'] = pd.to_numeric(costRevenueDf['USD_Production_Budget'])
@@ -34,7 +32,6 @@ costRevenueDf['USD_Domestic_Gross'] = pd.to_numeric(costRevenueDf['USD_Domestic_
 
 #Challenge 3 Convert the Release_Date column to a Pandas Datetime type.
 costRevenueDf['Release_Date'] = pd.to_datetime(costRevenueDf['Release_Date'])
-# print(costRevenueDf.info())
 
 #Average Production Value
 print(costRevenueDf)
@@ -70,3 +67,22 @@ zeroWorldwideGrossingFilmsDf = costRevenueDf[costRevenueDf['USD_Worldwide_Gross'
 print(f"Number of films with a Worldwide grossing of $0.00: {len(zeroWorldwideGrossingFilmsDf)}")
 zeroWorldwideGrossingFilmsDfSortedDf = zeroWorldwideGrossingFilmsDf.sort_values('USD_Production_Budget', ascending=False)
 print(zeroWorldwideGrossingFilmsDfSortedDf)
+
+# international releases with worldwide revenue but zero local in the US
+int_wwrev_zero_local_df = costRevenueDf.query("USD_Worldwide_Gross > 0 and USD_Domestic_Gross == 0")
+print(int_wwrev_zero_local_df)
+
+# international releases with worldwide revenue but zero local in the US
+query_dateTime = pd.Timestamp('2018-05-01 00:00:00')
+filmsUnreleasedByMay1st2018 = costRevenueDf.query("Release_Date >= @query_dateTime")
+print(filmsUnreleasedByMay1st2018)
+
+#get a set of data that has none of these unscreened films by that time
+filmsToMay1st2018Df = costRevenueDf.drop(filmsUnreleasedByMay1st2018.index)
+print(filmsToMay1st2018Df)
+print(f"Total Films: {len(filmsToMay1st2018Df)}")
+
+notBreakEvenFilmsDf = filmsToMay1st2018Df.query("USD_Production_Budget > (USD_Worldwide_Gross)")
+print(f"Number of Films that didn't break even: {len(notBreakEvenFilmsDf)}")
+percentDidNotBreakEven = (len(notBreakEvenFilmsDf) / len(filmsToMay1st2018Df)) * 100.0
+print(f"Percent of films that didn't break even: {round(percentDidNotBreakEven,2)}%")
