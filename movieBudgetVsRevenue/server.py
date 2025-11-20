@@ -88,17 +88,57 @@ print(f"Number of Films that didn't break even: {len(notBreakEvenFilmsDf)}")
 percentDidNotBreakEven = (len(notBreakEvenFilmsDf) / len(filmsToMay1st2018Df)) * 100.0
 print(f"Percent of films that didn't break even: {round(percentDidNotBreakEven,2)}%")
 
-plt.figure(figsize=(8,4), dpi=200)
+# plt.figure(figsize=(8,4), dpi=200)
  
-ax = sns.scatterplot(data=filmsToMay1st2018Df,
-    y='USD_Production_Budget', 
-    x='Release_Date',
-    hue='USD_Worldwide_Gross',
-    size='USD_Worldwide_Gross'
-)
-ax.set(ylim=(0, 450000000),
-    xlim=(filmsToMay1st2018Df.Release_Date.min(), filmsToMay1st2018Df.Release_Date.max()),
-    xlabel='Year',
-    ylabel='Budget in $100 millions'
+# ax = sns.scatterplot(data=filmsToMay1st2018Df,
+#     y='USD_Production_Budget', 
+#     x='Release_Date',
+#     hue='USD_Worldwide_Gross',
+#     size='USD_Worldwide_Gross'
+# )
+# ax.set(ylim=(0, 450000000),
+#     xlim=(filmsToMay1st2018Df.Release_Date.min(), filmsToMay1st2018Df.Release_Date.max()),
+#     xlabel='Year',
+#     ylabel='Budget in $100 millions'
+# )
+# plt.show()
+print(filmsToMay1st2018Df.info())
+filmsToMay1st2018Df['Decade'] = filmsToMay1st2018Df['Release_Date'].dt.year//10*10
+print(filmsToMay1st2018Df)
+
+oldFilmsDf = filmsToMay1st2018Df[filmsToMay1st2018Df['Decade'] < 1970]
+newFilmsDf = filmsToMay1st2018Df[filmsToMay1st2018Df['Decade'] >= 1970]
+oldFilmsDf.sort_values('USD_Production_Budget', ascending=False, inplace=True)
+print(oldFilmsDf)
+print(f"Number of films prior to 1970: {len(oldFilmsDf)}")
+print(f"Most expensive film made prior to 1970: {oldFilmsDf['Movie_Title'].iloc[0]}")
+
+# linear regression plot for old films prior to 1970s
+# plt.figure(figsize=(8,4), dpi=200)
+# with sns.axes_style("whitegrid"):
+#     sns.regplot(data=oldFilmsDf,
+#         y='USD_Production_Budget', 
+#         x='USD_Worldwide_Gross',
+#         scatter_kws = {'alpha': 0.4},
+#         line_kws = {'color': 'black'}
+# )
+# plt.show()
+
+# linear regression plot for new films post 1970s
+
+# linear regression plot for old films prior to 1970s
+plt.figure(figsize=(8,4), dpi=200)
+with sns.axes_style("darkgrid"):
+    ax = sns.regplot(data=newFilmsDf,
+        y='USD_Production_Budget', 
+        x='USD_Worldwide_Gross',
+        color='#2f4b7c',
+        scatter_kws = {'alpha': 0.3},
+        line_kws = {"color":"#ff7c43"})
+ax.set(
+    ylim=(0, 300000000),
+    xlim=(0, 450000000),
+    xlabel=('Revenue in $ billions'),
+    ylabel=('Budget in $100 millions')
 )
 plt.show()
