@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.linear_model import LinearRegression
 
 workingDirectory = Path(__name__).resolve().parent;
 costRevenueDf = pd.read_csv(f"{workingDirectory}/cost_revenue_dirty.csv");
@@ -112,6 +113,12 @@ oldFilmsDf.sort_values('USD_Production_Budget', ascending=False, inplace=True)
 print(oldFilmsDf)
 print(f"Number of films prior to 1970: {len(oldFilmsDf)}")
 print(f"Most expensive film made prior to 1970: {oldFilmsDf['Movie_Title'].iloc[0]}")
+X = pd.DataFrame(oldFilmsDf, columns=['USD_Production_Budget'])
+Y = pd.DataFrame(oldFilmsDf, columns=['USD_Worldwide_Gross'])
+regression = LinearRegression()
+regression.fit(X,Y)
+print(f"Theta: {regression.intercept_} - Theta One: {regression.coef_}")
+print(f"R-Squared: {regression.score(X, Y)}")
 
 # linear regression plot for old films prior to 1970s
 # plt.figure(figsize=(8,4), dpi=200)
@@ -125,20 +132,26 @@ print(f"Most expensive film made prior to 1970: {oldFilmsDf['Movie_Title'].iloc[
 # plt.show()
 
 # linear regression plot for new films post 1970s
+# plt.figure(figsize=(8,4), dpi=200)
+# with sns.axes_style("darkgrid"):
+#     ax = sns.regplot(data=newFilmsDf,
+#         y='USD_Production_Budget', 
+#         x='USD_Worldwide_Gross',
+#         color='#2f4b7c',
+#         scatter_kws = {'alpha': 0.3},
+#         line_kws = {"color":"#ff7c43"})
+# ax.set(
+#     ylim=(0, 300000000),
+#     xlim=(0, 450000000),
+#     xlabel=('Revenue in $ billions'),
+#     ylabel=('Budget in $100 millions')
+# )
+# plt.show()
 
-# linear regression plot for old films prior to 1970s
-plt.figure(figsize=(8,4), dpi=200)
-with sns.axes_style("darkgrid"):
-    ax = sns.regplot(data=newFilmsDf,
-        y='USD_Production_Budget', 
-        x='USD_Worldwide_Gross',
-        color='#2f4b7c',
-        scatter_kws = {'alpha': 0.3},
-        line_kws = {"color":"#ff7c43"})
-ax.set(
-    ylim=(0, 300000000),
-    xlim=(0, 450000000),
-    xlabel=('Revenue in $ billions'),
-    ylabel=('Budget in $100 millions')
-)
-plt.show()
+X = pd.DataFrame(newFilmsDf, columns=['USD_Production_Budget'])
+Y = pd.DataFrame(newFilmsDf, columns=['USD_Worldwide_Gross'])
+regression = LinearRegression()
+regression.fit(X,Y)
+
+print(f"Theta: {regression.intercept_} - Theta One: {regression.coef_}")
+print(f"R-Squared: {regression.score(X, Y)}")
