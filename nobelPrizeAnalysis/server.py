@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import pandas as pd
 import plotly.express as px
+import seaborn as sns
 from urllib.request import urlopen
 
 
@@ -207,13 +208,13 @@ groupedByResearchLocs = nobelPrizeDf.groupby('organization_name').agg({"prize":"
 groupedByResearchLocs.sort_values('prize', ascending=True, inplace=True)
 top20 = groupedByResearchLocs[-20:]
 
-plt.figure(figsize=(14,8))
-plt.xticks(fontsize=14, rotation=45)
-plt.yticks(fontsize=14)
-plt.ylabel('Organizations ', fontsize=14)
-plt.xlabel('Number of Prizes', fontsize=14)
-plt.barh(top20.index, top20.values.flatten())
-plt.show()
+# plt.figure(figsize=(14,8))
+# plt.xticks(fontsize=14, rotation=45)
+# plt.yticks(fontsize=14)
+# plt.ylabel('Organizations ', fontsize=14)
+# plt.xlabel('Number of Prizes', fontsize=14)
+# plt.barh(top20.index, top20.values.flatten())
+# plt.show()
 
 top20BirthCities = nobelPrizeDf['organization_city'].value_counts()[:20]
 top20BirthCities.sort_values(ascending=True, inplace=True)
@@ -228,7 +229,7 @@ top20BirthCitiesBar = px.bar(x = top20BirthCities.values,
 top20BirthCitiesBar.update_layout(xaxis_title='Number of Prizes', 
                         yaxis_title='City',
                        coloraxis_showscale=False)
-top20BirthCitiesBar.show()
+# top20BirthCitiesBar.show()
 
 top20BirthCities = nobelPrizeDf['birth_city'].value_counts()[:20]
 top20BirthCities.sort_values(ascending=True, inplace=True)
@@ -244,23 +245,81 @@ top20BirthCitiesBar.update_layout(xaxis_title='Number of Prizes',
     yaxis_title='City of Birth',
     coloraxis_showscale=False
 )
-top20BirthCitiesBar.show()
+# top20BirthCitiesBar.show()
 
 countryCityOrg = nobelPrizeDf.groupby(['organization_country','organization_city','organization_name'], as_index=False).agg({'prize':'count'})
 countryCityOrg.sort_values('prize', ascending=False)
 print(countryCityOrg)
 
-burst = px.sunburst(
-    countryCityOrg, 
-    path=['organization_country', 'organization_city', 'organization_name'], 
-    values='prize',
-    title='Where do Discoveries Take Place?',
-)
+# burst = px.sunburst(
+#     countryCityOrg, 
+#     path=['organization_country', 'organization_city', 'organization_name'], 
+#     values='prize',
+#     title='Where do Discoveries Take Place?',
+# )
 
-burst.update_layout(
-    xaxis_title='Number of Prizes', 
-    yaxis_title='City',
-    coloraxis_showscale=False
-)
+# burst.update_layout(
+#     xaxis_title='Number of Prizes', 
+#     yaxis_title='City',
+#     coloraxis_showscale=False
+# )
  
-burst.show()
+# burst.show()
+
+print(nobelPrizeDf)
+print(nobelPrizeDf.info())
+print(type(nobelPrizeDf['birth_date']))
+nobelPrizeDf['winning_age'] = nobelPrizeDf['year'] - nobelPrizeDf['birth_date'].dt.year
+print(nobelPrizeDf)
+oldestAge = nobelPrizeDf['winning_age'].max()
+youngestAge = nobelPrizeDf['winning_age'].min()
+print(oldestAge)
+print(youngestAge)
+oldestDf = nobelPrizeDf[nobelPrizeDf['winning_age']==oldestAge]
+youngestDf = nobelPrizeDf[nobelPrizeDf['winning_age']==youngestAge]
+print(f"Name of Oldest Recipient: {oldestDf['full_name'].iloc[0]} - Age: {oldestAge} - Prize: {oldestDf['prize'].iloc[0]}")
+print(f"Name of Youngest Recipient: {youngestDf['full_name'].iloc[0]} - Age: {youngestAge} - Prize: {youngestDf['prize'].iloc[0]}")
+
+allWinningAges = nobelPrizeDf['winning_age']
+allWinAgesWoutNan = allWinningAges[~allWinningAges.isna()]
+print(f"Average age of Recipient: {allWinAgesWoutNan.values.mean()}")
+nobelPrizeDfWWinAges = nobelPrizeDf[~nobelPrizeDf['winning_age'].isna()]
+print(nobelPrizeDfWWinAges)
+# sns.histplot(data=nobelPrizeDfWWinAges, x="winning_age", bins=30)
+# plt.show()
+
+# linear regression plot for old films prior to 1970s
+plt.figure(figsize=(8,4), dpi=200)
+with sns.axes_style("whitegrid"):
+    sns.regplot(data=nobelPrizeDfWWinAges,
+        x='year',
+        y='winning_age', 
+        lowess=True, 
+        scatter_kws = {'alpha': 0.4},
+        line_kws = {'color': 'black'}
+)
+# plt.show()
+
+plt.figure(figsize=(8,4), dpi=200)
+with sns.axes_style("whitegrid"):
+    sns.boxplot(
+        data=nobelPrizeDfWWinAges,
+        x='category',
+        y='winning_age'
+    )
+ 
+# plt.show()
+
+with sns.axes_style('whitegrid'):
+    sns.lmplot(data=nobelPrizeDfWWinAges,
+        x='year', 
+        y='winning_age',
+        hue='category',
+        row = 'category',
+        lowess=True, 
+        aspect=2,
+        scatter_kws = {'alpha': 0.6},
+        line_kws={'linewidth': 5}
+    )
+ 
+plt.show()
